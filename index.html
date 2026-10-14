@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calvin Egress</title>
+<meta name="description" content="">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='26' fill='%230a0a0b'/%3E%3Cpath d='M38 32 L62 50 L38 68' fill='none' stroke='white' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="nav"><div class="wrap">
+  <a class="brand" href="index.html"><span class="mark"></span>Calvin&nbsp;Egress</a>
+  <input type="checkbox" id="navtoggle" class="navtoggle" hidden>
+  <label class="hamb" for="navtoggle" aria-label="Toggle menu"><span></span><span></span><span></span></label>
+  <nav class="navlinks">
+    <a href="methodology.html">Methodology</a>
+    <a href="validation.html">Validation</a>
+    <a href="about.html">About</a>
+    <a class="cta" href="simulator.html">Launch simulator</a>
+  </nav>
+</div></header>
+
+<!-- HERO (copy intentionally blank — product shot + actions) -->
+<section class="hero-lg" style="padding-bottom:0"><div class="wrap">
+  <h1 class="ph" style="min-height:1.1em"></h1>
+  <p class="sub ph" style="min-height:1em"></p>
+  <div class="hero-cta">
+    <a class="btn" href="simulator.html">Launch simulator <span class="arrow">→</span></a>
+    <a class="btn ghost" href="methodology.html">Read the methodology</a>
+  </div>
+  <div class="shot-wrap">
+    <div class="winframe">
+      <div class="winbar"><span></span><span></span><span></span></div>
+      <a href="simulator.html"><img src="assets/sim-preview.jpg" alt="Calvin Egress 3D simulator"></a>
+    </div>
+  </div>
+</div></section>
+
+<!-- METRICS -->
+<section class="sec"><div class="wrap">
+  <div class="metrics">
+    <div class="metric"><div class="v" data-count="4">0</div><div class="k">Hekman floors digitized</div></div>
+    <div class="metric"><div class="v" data-count="70">0</div><div class="k">Calvin buildings modeled</div></div>
+    <div class="metric"><div class="v"><span data-count="30">0</span><small>+</small></div><div class="k">adjustable parameters</div></div>
+    <div class="metric"><div class="v">1&thinsp;m</div><div class="k">grid · 0.25 s timestep</div></div>
+  </div>
+</div></section>
+
+<!-- CHARTS (generated from the engine — real model output) -->
+<section class="sec alt"><div class="wrap">
+  <div style="margin-bottom:8px">
+    <h4 class="chart-head" style="font-size:14px">Evacuation curve — Hekman Library</h4>
+    <p class="chart-cap">One representative run · 200 occupants · sim time on the x-axis</p>
+  </div>
+  <svg viewBox="0 0 680 300" width="100%" role="img" aria-label="Evacuation curve"><line x1="46" y1="16" x2="664" y2="16" stroke="#ececec"/><text x="37" y="20" text-anchor="end" font-size="11" fill="#9696a0">200</text><line x1="46" y1="77" x2="664" y2="77" stroke="#ececec"/><text x="37" y="81" text-anchor="end" font-size="11" fill="#9696a0">150</text><line x1="46" y1="138" x2="664" y2="138" stroke="#ececec"/><text x="37" y="142" text-anchor="end" font-size="11" fill="#9696a0">100</text><line x1="46" y1="199" x2="664" y2="199" stroke="#ececec"/><text x="37" y="203" text-anchor="end" font-size="11" fill="#9696a0">50</text><line x1="46" y1="260" x2="664" y2="260" stroke="#ececec"/><text x="37" y="264" text-anchor="end" font-size="11" fill="#9696a0">0</text><text x="46" y="286" text-anchor="middle" font-size="11" fill="#9696a0">0s</text><text x="200.5" y="286" text-anchor="middle" font-size="11" fill="#9696a0">209s</text><text x="355" y="286" text-anchor="middle" font-size="11" fill="#9696a0">417s</text><text x="509.5" y="286" text-anchor="middle" font-size="11" fill="#9696a0">626s</text><text x="664" y="286" text-anchor="middle" font-size="11" fill="#9696a0">834s</text><path d="M46.74 16L53.41 16L60.08 16L66.75 16L73.42 17.22L80.09 26.98L86.76 37.96L93.42 46.5L100.09 58.7L106.76 98.96L113.43 118.48L120.1 127.02L126.77 139.22L133.44 151.42L140.11 158.74L146.78 168.5L153.45 181.92L160.12 185.58L166.78 192.9L173.45 197.78L180.12 200.22L186.79 201.44L193.46 201.44L200.13 202.66L206.8 205.1L213.47 206.32L220.14 211.2L226.81 214.86L233.47 224.62L240.14 234.38L246.81 241.7L253.48 247.8L260.15 253.9L266.82 258.78L273.49 258.78L280.16 258.78L286.83 258.78L293.5 258.78L300.17 258.78L306.83 258.78L313.5 258.78L320.17 258.78L326.84 258.78L333.51 258.78L340.18 258.78L346.85 258.78L353.52 258.78L360.19 258.78L366.86 258.78L373.53 258.78L380.19 258.78L386.86 258.78L393.53 258.78L400.2 258.78L406.87 258.78L413.54 258.78L420.21 258.78L426.88 258.78L433.55 258.78L440.22 258.78L446.88 258.78L453.55 260L460.22 260L466.89 260L473.56 260L480.23 260L486.9 260L493.57 260L500.24 260L506.91 260L513.58 260L520.24 260L526.91 260L533.58 260L540.25 260L546.92 260L553.59 260L560.26 260L566.93 260L573.6 260L580.27 260L586.94 260L593.6 260L600.27 260L606.94 260L613.61 260L620.28 260L626.95 260L633.62 260L640.29 260L646.96 260L653.63 260L660.29 260L664 260" fill="none" stroke="#b9b9c0" stroke-width="2.4" stroke-linejoin="round"/><path d="M46.74 260L53.41 260L60.08 260L66.75 260L73.42 258.78L80.09 253.9L86.76 246.58L93.42 239.26L100.09 230.72L106.76 211.2L113.43 197.78L120.1 191.68L126.77 179.48L133.44 169.72L140.11 164.84L146.78 158.74L153.45 147.76L160.12 145.32L166.78 139.22L173.45 134.34L180.12 131.9L186.79 130.68L193.46 130.68L200.13 129.46L206.8 128.24L213.47 127.02L220.14 124.58L226.81 124.58L233.47 116.04L240.14 106.28L246.81 98.96L253.48 92.86L260.15 86.76L266.82 83.1L273.49 83.1L280.16 83.1L286.83 83.1L293.5 83.1L300.17 83.1L306.83 83.1L313.5 83.1L320.17 83.1L326.84 83.1L333.51 83.1L340.18 83.1L346.85 83.1L353.52 83.1L360.19 83.1L366.86 83.1L373.53 83.1L380.19 83.1L386.86 83.1L393.53 83.1L400.2 83.1L406.87 83.1L413.54 83.1L420.21 83.1L426.88 83.1L433.55 83.1L440.22 83.1L446.88 83.1L453.55 83.1L460.22 83.1L466.89 83.1L473.56 83.1L480.23 83.1L486.9 83.1L493.57 83.1L500.24 83.1L506.91 83.1L513.58 83.1L520.24 83.1L526.91 83.1L533.58 83.1L540.25 83.1L546.92 83.1L553.59 83.1L560.26 83.1L566.93 83.1L573.6 83.1L580.27 83.1L586.94 83.1L593.6 83.1L600.27 83.1L606.94 83.1L613.61 83.1L620.28 83.1L626.95 83.1L633.62 83.1L640.29 83.1L646.96 83.1L653.63 83.1L660.29 83.1L664 83.1" fill="none" stroke="#e5484d" stroke-width="2.4" stroke-linejoin="round"/></svg>
+  <div class="lgnd"><span><i style="background:#e5484d"></i>Evacuated</span><span><i style="background:#b9b9c0"></i>Still inside</span></div>
+
+  <div class="chart-row">
+    <div>
+      <h4 class="chart-head">Effect of sprinklers</h4>
+      <p class="chart-cap">Deaths — otherwise identical scenario</p>
+      <svg viewBox="0 0 320 240" width="100%" role="img" aria-label="Deaths with and without sprinklers"><rect x="70.66666666666666" y="45.217391304347814" width="66" height="154.7826086956522" rx="3" fill="#0a0a0b"/><text x="103.66666666666666" y="37.217391304347814" text-anchor="middle" font-size="18" font-weight="600" fill="#0a0a0b">68</text><text x="103.66666666666666" y="224" text-anchor="middle" font-size="12" fill="#63636b">No sprinklers</text><rect x="187.33333333333331" y="186.34271099744245" width="66" height="13.657289002557548" rx="3" fill="#e5484d"/><text x="220.33333333333331" y="178.34271099744245" text-anchor="middle" font-size="18" font-weight="600" fill="#0a0a0b">6</text><text x="220.33333333333331" y="224" text-anchor="middle" font-size="12" fill="#63636b">Sprinklers</text><line x1="20" y1="200" x2="304" y2="200" stroke="#ececec"/></svg>
+    </div>
+    <div>
+      <h4 class="chart-head">Clearance-time distribution</h4>
+      <p class="chart-cap">RSET across 40 Monte-Carlo runs</p>
+      <svg viewBox="0 0 320 240" width="100%" role="img" aria-label="RSET distribution"><rect x="23" y="111" width="34.57142857142857" height="89" rx="2" fill="#e5484d" opacity="0.88"/><rect x="63.57142857142857" y="22" width="34.57142857142857" height="178" rx="2" fill="#e5484d" opacity="0.88"/><rect x="104.14285714285714" y="81.33333333333334" width="34.57142857142857" height="118.66666666666666" rx="2" fill="#e5484d" opacity="0.88"/><rect x="144.71428571428572" y="96.16666666666666" width="34.57142857142857" height="103.83333333333334" rx="2" fill="#e5484d" opacity="0.88"/><rect x="185.28571428571428" y="170.33333333333334" width="34.57142857142857" height="29.666666666666664" rx="2" fill="#e5484d" opacity="0.88"/><rect x="225.85714285714283" y="140.66666666666669" width="34.57142857142857" height="59.33333333333333" rx="2" fill="#e5484d" opacity="0.88"/><rect x="266.42857142857144" y="185.16666666666666" width="34.57142857142857" height="14.833333333333332" rx="2" fill="#e5484d" opacity="0.88"/><text x="20" y="224" text-anchor="middle" font-size="11" fill="#9696a0">289s</text><text x="162" y="224" text-anchor="middle" font-size="11" fill="#9696a0">474s</text><text x="304" y="224" text-anchor="middle" font-size="11" fill="#9696a0">659s</text><line x1="20" y1="200" x2="304" y2="200" stroke="#ececec"/></svg>
+    </div>
+  </div>
+</div></section>
+
+<!-- DATA / CSV EXPORT -->
+<section class="sec"><div class="wrap">
+  <div class="data-split">
+    <div>
+      <h4 class="chart-head" style="font-size:14px">Export any run as CSV</h4>
+      <p class="chart-cap">Scenario parameters, final metrics, and the full evacuation curve — straight from the viewer.</p>
+      <div class="hero-cta" style="justify-content:flex-start;margin-top:18px">
+        <a class="btn" href="simulator.html">Run &amp; export a scenario <span class="arrow">→</span></a>
+      </div>
+    </div>
+    <div class="codecard" aria-hidden="true">
+      <div class="bar"><span></span><span></span><span></span>&nbsp;hekman_run.csv</div>
+<pre><span class="c"># calvin-egress run · Hekman Library</span>
+<span class="c"># occupants,200  alarm,voice  sprinklers,off</span>
+<span class="k">time_s</span>,<span class="k">evacuated</span>,<span class="k">inside</span>
+0.00,<span class="n">0</span>,<span class="n">200</span>
+106.00,<span class="n">39</span>,<span class="n">149</span>
+266.00,<span class="n">132</span>,<span class="n">60</span>
+453.00,<span class="n">145</span>,<span class="n">52</span>
+<span class="c"># RSET_s,544  evacuated,145  deaths,68</span></pre>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <div class="about">
+      <a class="brand" href="index.html"><span class="mark"></span>Calvin&nbsp;Egress</a>
+      <p class="ph" style="min-height:1em"></p>
+    </div>
+    <div><h5>Product</h5><nav>
+      <a href="simulator.html">Simulator</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="validation.html">Validation</a>
+    </nav></div>
+    <div><h5>Project</h5><nav>
+      <a href="about.html">About</a>
+      <a href="credits.html">Credits</a>
+      <a href="validation.html#roadmap">Roadmap</a>
+    </nav></div>
+  </div>
+  <div class="foot-base">
+    <span>© 2026 Calvin Egress · Caleb Steele · Calvin University</span>
+    <span>v1.0</span>
+  </div>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

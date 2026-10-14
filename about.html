@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Calvin Egress</title>
+<meta name="description" content="Why Calvin Egress exists: a performance-based evacuation simulator developed for Calvin University safety planning, and the principles behind it.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23c33b52'/%3E%3Ctext x='50' y='68' font-family='Archivo,sans-serif' font-size='52' font-weight='900' fill='white' text-anchor='middle'%3ECE%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="nav"><div class="wrap">
+  <a class="brand" href="index.html"><span class="logo">CE</span><span class="wm">Calvin Egress<span>Evacuation Simulator</span></span></a>
+  <input type="checkbox" id="navtoggle" class="navtoggle" hidden>
+  <label class="hamb" for="navtoggle" aria-label="Toggle menu"><span></span><span></span><span></span></label>
+  <nav class="navlinks">
+    <a href="index.html">Overview</a>
+    <a href="methodology.html">Methodology</a>
+    <a href="validation.html">Validation</a>
+    <a href="about.html" class="active">About</a>
+    <a class="cta" href="simulator.html">Launch Simulator →</a>
+  </nav>
+</div></header>
+
+<section class="hero" style="padding-bottom:40px"><div class="wrap">
+  <p class="eyebrow reveal">About the project</p>
+  <h1 class="h-lg reveal d1" style="max-width:20ch">Built to make building safety something you can <em style="font-style:normal;color:var(--brand-l)">see</em>.</h1>
+  <p class="lead reveal d2">Evacuation planning usually lives in spreadsheets and code tables. Calvin Egress turns it into something you can watch — a building, a fire, and the people trying to get out — so the trade-offs behind a safety decision are legible to anyone in the room.</p>
+</div></section>
+
+<section class="band tight"><div class="wrap">
+<div class="docgrid">
+  <aside class="toc reveal">
+    <p class="eyebrow" style="margin-bottom:12px">On this page</p>
+    <a href="#why">Why it exists</a>
+    <a href="#who">Who it's for</a>
+    <a href="#principles">Design principles</a>
+    <a href="#maker">Who built it</a>
+  </aside>
+  <article class="prose reveal d1">
+    <h2 id="why">Why it exists</h2>
+    <p>Calvin Egress began as an agent-based model for a Calvin University safety-planning research project. The goal was a tool that could answer the questions a campus actually faces — <em>Does voice evacuation get people out faster than a bell? Do these sprinklers buy enough time? What happens if that stairwell is blocked?</em> — and show the answer, floor by floor, in real time.</p>
+    <p>It is deliberately <strong>performance-based</strong>: instead of only checking boxes against a code, it simulates the physics of the egress and compares the time people need to get out (RSET) against the time before conditions turn deadly (ASET). That comparison is the heart of modern fire-safety engineering.</p>
+
+    <h2 id="who">Who it's for</h2>
+    <ul>
+      <li><strong>Safety planners &amp; administrators</strong> weighing concrete interventions against each other.</li>
+      <li><strong>Researchers &amp; students</strong> exploring how crowd behavior, building geometry, and fire interact.</li>
+      <li><strong>Anyone in the meeting</strong> who needs to understand a recommendation without reading the code behind it.</li>
+    </ul>
+
+    <h2 id="principles">Design principles</h2>
+    <h3>Grounded, not guessed</h3>
+    <p>Every number traces to pedestrian science or fire-safety engineering — Weidmann/Fruin walking speeds, SFPE pre-movement, FED tenability. See the <a href="methodology.html">methodology</a>.</p>
+    <h3>Honest about its edges</h3>
+    <p>The model states exactly where it is and isn't trustworthy. It's a comparative planning tool, not certified CFD — and the <a href="validation.html">validation page</a> says so plainly.</p>
+    <h3>Open in one click</h3>
+    <p>The whole simulator runs in a browser with no install and no account, so a result can be reproduced live in front of the people who need to see it.</p>
+
+    <h2 id="maker">Who built it</h2>
+    <p>Calvin Egress is designed and built by <strong>Caleb Steele</strong>, within a Calvin University research context, for use in campus safety planning. The engine, geometry pipeline, and this site are developed as a single evolving project, with a roadmap toward research-grade validation.</p>
+    <div class="callout">
+      <h4>Status</h4>
+      <p>Version 1.0 — a working, sanity-checked browser engine. The <a href="validation.html#roadmap">roadmap</a> covers RiMEA verification and the path to swappable research-grade backends.</p>
+    </div>
+    <div class="cta-row" style="margin-top:34px">
+      <a class="btn primary" href="simulator.html">Launch the simulator <span class="arrow">→</span></a>
+      <a class="btn" href="credits.html">Credits &amp; references</a>
+    </div>
+  </article>
+</div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <div class="about">
+      <a class="brand" href="index.html"><span class="logo">CE</span><span class="wm">Calvin Egress<span>Evacuation Simulator</span></span></a>
+      <p>A performance-based evacuation + fire/smoke tenability simulator for Calvin University safety planning. Comparative planning tool — ASET vs RSET — not a certified life-safety calculation.</p>
+    </div>
+    <div><h5>Explore</h5><nav>
+      <a href="simulator.html">Launch simulator</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="validation.html">Validation &amp; limits</a>
+    </nav></div>
+    <div><h5>Project</h5><nav>
+      <a href="about.html">About</a>
+      <a href="credits.html">Credits &amp; references</a>
+      <a href="validation.html#roadmap">Roadmap</a>
+    </nav></div>
+  </div>
+  <div class="foot-base">
+    <span>© 2026 Calvin Egress · Built by Caleb Steele for Calvin University safety planning.</span>
+    <span class="mono">v1.0 · browser engine · ASET vs RSET</span>
+  </div>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

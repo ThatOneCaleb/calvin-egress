@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validation &amp; Limitations — Calvin Egress</title>
+<meta name="description" content="What Calvin Egress has been checked against, where it is trustworthy, its honest limitations, and the roadmap toward research-grade validation (RiMEA).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23c33b52'/%3E%3Ctext x='50' y='68' font-family='Archivo,sans-serif' font-size='52' font-weight='900' fill='white' text-anchor='middle'%3ECE%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="nav"><div class="wrap">
+  <a class="brand" href="index.html"><span class="logo">CE</span><span class="wm">Calvin Egress<span>Evacuation Simulator</span></span></a>
+  <input type="checkbox" id="navtoggle" class="navtoggle" hidden>
+  <label class="hamb" for="navtoggle" aria-label="Toggle menu"><span></span><span></span><span></span></label>
+  <nav class="navlinks">
+    <a href="index.html">Overview</a>
+    <a href="methodology.html">Methodology</a>
+    <a href="validation.html" class="active">Validation</a>
+    <a href="about.html">About</a>
+    <a class="cta" href="simulator.html">Launch Simulator →</a>
+  </nav>
+</div></header>
+
+<section class="hero" style="padding-bottom:40px"><div class="wrap">
+  <p class="eyebrow reveal">Validation &amp; limitations</p>
+  <h1 class="h-lg reveal d1" style="max-width:22ch">A tool is only useful if you know where to trust it.</h1>
+  <p class="lead reveal d2">Calvin Egress passes a battery of behavioral sanity checks and is honest about the rest. Here's what's been verified, what isn't yet, and the path to research-grade.</p>
+</div></section>
+
+<!-- WHAT PASSES -->
+<section class="band tight"><div class="wrap">
+  <div class="sec-head reveal">
+    <p class="eyebrow"><b>01</b> &nbsp;Verified behavior</p>
+    <h2 class="h-md">Sanity checks that pass</h2>
+    <p>Automated engine tests confirm the model moves in the right direction for the levers that matter — the minimum bar before any result is worth reading.</p>
+  </div>
+  <div class="grid c2">
+    <div class="feat reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h3>Speed hierarchy matches literature</h3>
+      <p>Able adults &gt; older adults &gt; children &gt; mobility-impaired, in line with Weidmann/Fruin free-flow data.</p></div>
+    <div class="feat reveal d1"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h3>Sprinklers save lives</h3>
+      <p>Turning sprinklers on cuts mean deaths from ≈ 66 to ≈ 9 in a representative Hekman fire by capping fire growth and extending ASET.</p></div>
+    <div class="feat reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h3>Slower detection costs lives</h3>
+      <p>Delaying detection and alarm raises casualties (≈ 60 → ≈ 82), because every second is added to the front of the RSET timeline.</p></div>
+    <div class="feat reveal d1"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h3>Capacity &amp; cooperation matter</h3>
+      <p>Narrower or locked exits and lower crowd cooperation worsen clearance time and crush casualties, as expected at bottlenecks.</p></div>
+    <div class="feat reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h3>Runs always terminate</h3>
+      <p>A stall-guard ends every run and flags genuinely trapped occupants, so results are never an artifact of a deadlock.</p></div>
+    <div class="feat reveal d1"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h3>Monte-Carlo returns a distribution</h3>
+      <p>Repeated runs produce a spread of outcomes — not a single fragile number — so conclusions rest on the distribution.</p></div>
+  </div>
+</div></section>
+
+<hr class="rule">
+
+<!-- LIMITATIONS -->
+<section class="band"><div class="wrap">
+<div class="docgrid">
+  <aside class="toc reveal">
+    <p class="eyebrow" style="margin-bottom:12px">Sections</p>
+    <a href="#limits">Known limitations</a>
+    <a href="#roadmap">Path to research-grade</a>
+  </aside>
+  <article class="prose reveal d1">
+    <h2 id="limits">Known limitations</h2>
+    <p>Stated plainly, because a planning tool is only defensible if its boundaries are explicit.</p>
+    <ul>
+      <li><strong>Not CFD fire.</strong> Fire is a t²-style cellular spread with FED tenability, not a NIST FDS computation. It captures growth, compartmentation, and tenability trends — not detailed combustion physics.</li>
+      <li><strong>Door ratings are an assumption.</strong> No real door schedules exist for the buildings, so fire-door behavior is an adjustable modeling assumption rather than measured data.</li>
+      <li><strong>Door channeling is geometry-limited.</strong> The coarse 1 m Hekman digitization merged many rooms, so few one-cell doorways are detected and door policy has a muted effect there. The effect is clear on buildings with proper room walls; finer floor plans would fix it.</li>
+      <li><strong>Simplified crowd physics.</strong> A cell-capacity model, not continuous body-force clogging — it does not reproduce the full "faster-is-slower" arching at doorways.</li>
+      <li><strong>Generated interiors approximate reality.</strong> Only Hekman reflects real plans; other Calvin buildings are plausible interiors fit to a real footprint.</li>
+    </ul>
+    <div class="callout warn">
+      <h4>What this means for use</h4>
+      <p>Treat results as <strong>comparative</strong>: "which scenario clears faster / loses fewer people?" is defensible; a precise predicted death count for a specific real fire is not. The strongest conclusions come from relative comparisons and Monte-Carlo distributions, not single absolute numbers.</p>
+    </div>
+
+    <h2 id="roadmap">Path to research-grade</h2>
+    <p>The browser engine is the product; the credibility work ahead is well-defined:</p>
+    <ul>
+      <li><strong>RiMEA test suite.</strong> Implement the standard verification cases — Test 4 (fundamental diagram), Test 6 (corner), Test 7 (speed distribution), Test 11 (route choice) — and confirm outputs fall within accepted tolerances.</li>
+      <li><strong>Measured door flow.</strong> Confirm specific flow lands in the ≈ 1.0–1.4 persons/m/s range reported in the literature.</li>
+      <li><strong>Smoke / FED calibration.</strong> Tie the tenability model to published fire-engineering data.</li>
+      <li><strong>Swappable research backends.</strong> Expose the same scenario interface to validated engines — JuPedSim or Vadere for crowd dynamics, FDS or CFAST for certified fire — feeding the same 3D front-end for eventual certification.</li>
+    </ul>
+    <div class="cta-row" style="margin-top:34px">
+      <a class="btn primary" href="simulator.html">Launch the simulator <span class="arrow">→</span></a>
+      <a class="btn" href="methodology.html">Read the methodology</a>
+    </div>
+  </article>
+</div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <div class="about">
+      <a class="brand" href="index.html"><span class="logo">CE</span><span class="wm">Calvin Egress<span>Evacuation Simulator</span></span></a>
+      <p>A performance-based evacuation + fire/smoke tenability simulator for Calvin University safety planning. Comparative planning tool — ASET vs RSET — not a certified life-safety calculation.</p>
+    </div>
+    <div><h5>Explore</h5><nav>
+      <a href="simulator.html">Launch simulator</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="validation.html">Validation &amp; limits</a>
+    </nav></div>
+    <div><h5>Project</h5><nav>
+      <a href="about.html">About</a>
+      <a href="credits.html">Credits &amp; references</a>
+      <a href="validation.html#roadmap">Roadmap</a>
+    </nav></div>
+  </div>
+  <div class="foot-base">
+    <span>© 2026 Calvin Egress · Built by Caleb Steele for Calvin University safety planning.</span>
+    <span class="mono">v1.0 · browser engine · ASET vs RSET</span>
+  </div>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

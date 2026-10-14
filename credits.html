@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credits &amp; References — Calvin Egress</title>
+<meta name="description" content="The science, data, and technology behind Calvin Egress — pedestrian and fire-safety references, data sources, and the software stack.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23c33b52'/%3E%3Ctext x='50' y='68' font-family='Archivo,sans-serif' font-size='52' font-weight='900' fill='white' text-anchor='middle'%3ECE%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="nav"><div class="wrap">
+  <a class="brand" href="index.html"><span class="logo">CE</span><span class="wm">Calvin Egress<span>Evacuation Simulator</span></span></a>
+  <input type="checkbox" id="navtoggle" class="navtoggle" hidden>
+  <label class="hamb" for="navtoggle" aria-label="Toggle menu"><span></span><span></span><span></span></label>
+  <nav class="navlinks">
+    <a href="index.html">Overview</a>
+    <a href="methodology.html">Methodology</a>
+    <a href="validation.html">Validation</a>
+    <a href="about.html">About</a>
+    <a class="cta" href="simulator.html">Launch Simulator →</a>
+  </nav>
+</div></header>
+
+<section class="hero" style="padding-bottom:40px"><div class="wrap">
+  <p class="eyebrow reveal">Credits &amp; references</p>
+  <h1 class="h-lg reveal d1" style="max-width:20ch">The shoulders this stands on.</h1>
+  <p class="lead reveal d2">Calvin Egress draws on established pedestrian science and fire-safety engineering, open geographic data, and open-source graphics.</p>
+</div></section>
+
+<section class="band tight"><div class="wrap">
+  <div class="cols2">
+    <div class="reveal">
+      <p class="eyebrow"><b>01</b> &nbsp;Science</p>
+      <ul class="prose" style="margin-top:8px">
+        <li><strong>Weidmann</strong> — pedestrian fundamental diagram (density → walking speed).</li>
+        <li><strong>Fruin</strong> — pedestrian level-of-service and free-flow walking speeds.</li>
+        <li><strong>SFPE Handbook</strong> — pre-movement time distributions and the ASET/RSET framework.</li>
+        <li><strong>Purser (FED)</strong> — fractional effective dose model for smoke tenability.</li>
+        <li><strong>Jin</strong> — visibility and walking speed in smoke; wrong-turn behavior.</li>
+        <li><strong>RiMEA</strong> — standard verification and validation test cases for evacuation models.</li>
+      </ul>
+    </div>
+    <div class="reveal d1">
+      <p class="eyebrow"><b>02</b> &nbsp;Data &amp; technology</p>
+      <ul class="prose" style="margin-top:8px">
+        <li><strong>OpenStreetMap</strong> — building footprints for the Calvin campus. © OpenStreetMap contributors.</li>
+        <li><strong>Hekman Library floor plans</strong> — digitized to the 1 m model grid.</li>
+        <li><strong>Three.js</strong> — WebGL rendering of the real-time 3D view.</li>
+        <li><strong>Plain JavaScript engine</strong> — a dependency-free, Node-testable simulation core that runs entirely in the browser.</li>
+        <li><strong>Type</strong> — Archivo, Plus Jakarta Sans, and JetBrains Mono (Google Fonts).</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="rule" style="margin:48px 0">
+
+  <div class="split">
+    <div class="reveal">
+      <p class="eyebrow"><b>03</b> &nbsp;Project</p>
+      <h2 class="h-md">Built &amp; maintained by Caleb Steele</h2>
+      <p class="muted" style="margin-top:14px">For Calvin University safety planning. Engine, geometry pipeline, and this site are developed as one evolving project. For collaboration, data contributions (finer floor plans especially), or questions about the model, reach out through the Calvin University research context under which it's developed.</p>
+      <div class="cta-row" style="margin-top:26px">
+        <a class="btn primary" href="simulator.html">Launch the simulator <span class="arrow">→</span></a>
+        <a class="btn" href="validation.html">Validation &amp; limits</a>
+      </div>
+    </div>
+    <div class="reveal d1">
+      <div class="callout">
+        <h4>Citing this tool</h4>
+        <p style="font-family:var(--mono);font-size:.86rem;line-height:1.7;color:#c3cad8">Steele, C. <em>Calvin Egress: a performance-based building evacuation simulator.</em> Calvin University, 2026. ASET/RSET browser model.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <div class="about">
+      <a class="brand" href="index.html"><span class="logo">CE</span><span class="wm">Calvin Egress<span>Evacuation Simulator</span></span></a>
+      <p>A performance-based evacuation + fire/smoke tenability simulator for Calvin University safety planning. Comparative planning tool — ASET vs RSET — not a certified life-safety calculation.</p>
+    </div>
+    <div><h5>Explore</h5><nav>
+      <a href="simulator.html">Launch simulator</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="validation.html">Validation &amp; limits</a>
+    </nav></div>
+    <div><h5>Project</h5><nav>
+      <a href="about.html">About</a>
+      <a href="credits.html">Credits &amp; references</a>
+      <a href="validation.html#roadmap">Roadmap</a>
+    </nav></div>
+  </div>
+  <div class="foot-base">
+    <span>© 2026 Calvin Egress · Built by Caleb Steele for Calvin University safety planning.</span>
+    <span class="mono">v1.0 · browser engine · ASET vs RSET</span>
+  </div>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

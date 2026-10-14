@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calvin Evacuation Simulator — 3D</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+  :root{
+    --bg:#0a0b0d; --bg2:#111317; --card:#131519; --card2:#191c22; --line:#22262e; --line2:#2d323c;
+    --ink:#eef0f4; --muted:#98a1b2; --faint:#69707e;
+    --brand:#c33b52; --brand-d:#a52d43; --brand-l:#dd6076;
+    --good:#35d08a; --bad:#ff5d59; --fire:#ff7a33;
+    --ui:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{ height:100%; }
+  body{ margin:0; color:var(--ink); font-family:var(--ui); font-size:14px; line-height:1.55; -webkit-font-smoothing:antialiased; overflow:hidden; background:var(--bg); }
+  header{ display:none; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .logo{ width:36px; height:36px; border-radius:9px; display:grid; place-items:center; color:#fff; font-weight:800; font-size:13px; letter-spacing:.02em; background:var(--brand); }
+  header h1{ margin:0; font-weight:800; font-size:18px; letter-spacing:-.01em; line-height:1; color:var(--ink); }
+  .brandsub{ display:block; font-size:11.5px; font-weight:500; color:var(--faint); margin-top:3px; }
+  .navlink{ margin-left:auto; font-size:13px; font-weight:600; color:var(--ink); text-decoration:none; border:1px solid var(--line2); background:var(--card2); padding:8px 15px; border-radius:8px; transition:.14s; }
+  .navlink:hover{ background:var(--brand); color:#fff; border-color:var(--brand); }
+  .toolbar{ position:fixed; top:12px; left:12px; right:12px; z-index:4; display:flex; align-items:center; gap:20px; padding:9px 16px; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+  .tb-actions{ display:flex; gap:8px; }
+  .tb-btn{ padding:8px 16px; border:1px solid var(--line2); background:var(--card2); color:var(--ink); border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:.14s; }
+  .tb-btn:hover{ border-color:var(--brand-l); }
+  .tb-btn.go{ background:var(--brand); border-color:var(--brand); color:#fff; }
+  .tb-btn.go:hover{ background:var(--brand-l); border-color:var(--brand-l); }
+  .tb-speed{ display:flex; align-items:center; gap:10px; }
+  .tb-speed label{ font-size:12px; font-weight:600; color:var(--muted); }
+  .tb-speed input{ width:120px; }
+  .tb-speed span{ font-family:var(--mono); font-size:12px; color:var(--muted); min-width:26px; }
+  .tb-status{ margin-left:auto; display:flex; align-items:center; gap:24px; }
+  .stat{ display:flex; flex-direction:column; align-items:flex-end; line-height:1.1; }
+  .stat b{ font-family:var(--mono); font-size:16px; font-weight:600; color:var(--ink); }
+  .stat i{ font-style:normal; font-size:9.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); margin-top:3px; }
+  .run{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--muted); }
+  .rundot{ width:9px; height:9px; border-radius:50%; background:var(--faint); transition:.14s; }
+  .rundot.on{ background:var(--good); }
+  .wrap{ display:block; }
+  .stage{ position:fixed; inset:0; z-index:0; background:#07080a; }
+  #view{ position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#07080a; }
+  canvas{ display:block; background:#07080a; cursor:crosshair; }
+  .legend{ position:fixed; left:14px; bottom:12px; z-index:3; display:flex; flex-wrap:wrap; gap:8px 14px; font-size:12px; font-weight:500; color:var(--muted); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:9px 13px; }
+  .legend span{ display:flex; align-items:center; gap:7px; }
+  .dot{ width:11px; height:11px; border-radius:4px; display:inline-block; }
+  .panel{ position:fixed; top:74px; right:12px; bottom:12px; width:314px; z-index:3; display:flex; flex-direction:column; gap:12px; overflow-y:auto; padding-right:2px; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 17px 18px; }
+  .card h2{ margin:0 0 14px; display:flex; align-items:center; gap:9px; font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .card h2::before{ content:''; width:8px; height:8px; border-radius:2px; background:var(--brand); }
+  select{ width:100%; padding:11px 34px 11px 13px; background:var(--card2); color:var(--ink); border:1px solid var(--line2); border-radius:9px;
+    font-family:var(--ui); font-size:14px; font-weight:600; appearance:none; -webkit-appearance:none; cursor:pointer;
+    background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+    background-position:right 15px center,right 10px center; background-size:5px 5px,5px 5px; background-repeat:no-repeat; }
+  select:hover{ border-color:var(--brand-l); } select:focus{ outline:none; border-color:var(--brand); }
+  .tag{ font-size:11px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; margin-top:11px; padding:4px 10px; border-radius:6px; display:inline-block; }
+  .tag.real{ background:rgba(53,208,138,.13); color:#5fe0a6; } .tag.gen{ background:rgba(232,178,58,.14); color:#f0c46a; }
+  .ctrl{ margin:14px 0; }
+  .ctrl label{ display:flex; justify-content:space-between; align-items:baseline; font-size:12.5px; font-weight:600; color:var(--muted); margin-bottom:9px; }
+  .ctrl label b{ color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums; font-size:13px; font-family:var(--mono); }
+  input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:16px; background:transparent; cursor:pointer; }
+  input[type=range]::-webkit-slider-runnable-track{ height:4px; background:#2a2f39; border-radius:3px; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:15px; height:15px; margin-top:-6px; border-radius:50%; background:var(--brand); border:3px solid var(--card); }
+  input[type=range]::-moz-range-track{ height:4px; background:#2a2f39; border-radius:3px; }
+  input[type=range]::-moz-range-thumb{ width:13px; height:13px; border:3px solid var(--card); border-radius:50%; background:var(--brand); }
+  .row{ display:flex; gap:9px; }
+  button{ flex:1; padding:11px 12px; border:1px solid var(--line2); background:var(--card2); color:var(--ink); border-radius:9px; font-family:var(--ui); font-size:13px; font-weight:600; cursor:pointer; transition:.14s; }
+  button:hover{ border-color:var(--brand-l); background:#20242b; }
+  button.primary{ background:var(--brand); border-color:var(--brand); color:#fff; }
+  button.primary:hover{ background:var(--brand-l); }
+  button.fire{ width:100%; margin:6px 0 12px; background:var(--fire); border-color:var(--fire); color:#231206; font-weight:700; }
+  button.fire:hover{ filter:brightness(1.07); }
+  .metrics{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .metric{ background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:11px 12px; }
+  .metric .v{ font-family:var(--mono); font-size:22px; font-weight:600; line-height:1; font-variant-numeric:tabular-nums; color:var(--ink); }
+  .metric .v.good{ color:var(--good); } .metric .v.bad{ color:var(--bad); }
+  .metric .k{ font-size:10px; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--faint); margin-top:7px; }
+  .bar{ height:6px; background:#2a2f39; border-radius:4px; overflow:hidden; margin-top:14px; }
+  .bar > i{ display:block; height:100%; background:var(--good); width:0; transition:width .12s linear; }
+  #plot{ width:100%; height:118px; display:block; background:var(--card2); border:1px solid var(--line); border-radius:9px; }
+  .plotkey{ display:flex; gap:16px; margin-top:9px; font-size:11px; color:var(--muted); }
+  .plotkey span{ display:flex; align-items:center; gap:6px; }
+  .plotkey i{ width:12px; height:3px; border-radius:2px; display:inline-block; }
+  .hint{ font-size:12px; color:var(--faint); line-height:1.55; margin:2px 0 8px; }
+  .hint b{ color:var(--ink); font-weight:700; }
+  .switchrow{ display:flex; align-items:center; justify-content:space-between; }
+  .switchrow input[type=checkbox]{ width:auto; accent-color:var(--brand); transform:scale(1.25); cursor:pointer; }
+  select option{ background:var(--card2); color:var(--ink); }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <span class="logo">CE</span>
+    <div><h1>Calvin Egress</h1><span class="brandsub">Building Evacuation Simulator · 3D</span></div>
+  </div>
+  <a href="index.html" class="navlink">2D View</a>
+</header>
+<div class="toolbar">
+  <div class="tb-actions">
+    <a href="index.html" class="tb-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px" title="Back to site"><span style="font-weight:800;color:var(--brand)">CE</span>Home</a>
+    <button id="btnSetup" class="tb-btn">Setup</button>
+    <button id="btnRun" class="tb-btn go">Go</button>
+    <button id="btnStep" class="tb-btn">Step</button>
+    <button id="btnReset" class="tb-btn">Reset</button>
+  </div>
+  <div class="tb-speed"><label>Speed</label><input id="speed" type="range" min="1" max="16" step="1" value="4"><span id="vSpeed">4×</span></div>
+  <div class="tb-status">
+    <span class="stat"><b id="ticks">0</b><i>ticks</i></span>
+    <span class="stat"><b id="clock">0.0 s</b><i>sim time</i></span>
+    <span class="run"><span id="runDot" class="rundot"></span><span id="runState">idle</span></span>
+  </div>
+</div>
+<div class="wrap">
+  <div class="stage">
+    <div id="view"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:#4a9eff"></i>adult</span>
+      <span><i class="dot" style="background:#37c0a0"></i>older adult</span>
+      <span><i class="dot" style="background:#8bd450"></i>child</span>
+      <span><i class="dot" style="background:#f0a83b"></i>mobility-impaired</span>
+      <span><i class="dot" style="background:#ff2d55"></i>crush death</span>
+      <span><i class="dot" style="background:#262b36;border:1px solid #556"></i>smoke death</span>
+      <span><i class="dot" style="background:#37d67a"></i>exit / stair</span>
+      <span><i class="dot" style="background:#a06cff"></i>doorway</span>
+      <span><i class="dot" style="background:#ff6a2c"></i>fire</span>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="card">
+      <h2>Building</h2>
+      <select id="bld"></select>
+    </div>
+    <div class="card">
+      <h2>Parameters</h2>
+      <div class="ctrl"><label>Occupants <b id="vPop">150 people</b></label><input id="pop" type="range" min="20" max="600" step="10" value="150"></div>
+      <div class="ctrl"><label>Reaction time (median) <b id="vPre">20 s</b></label><input id="pre" type="range" min="0" max="60" step="1" value="20"></div>
+      <div class="ctrl"><label>Crowd cooperation <b id="vCoop">50%</b></label><input id="coop" type="range" min="0" max="100" step="5" value="50"></div>
+      <div class="hint" style="margin:0 0 10px">Walking speed isn't a knob — each person's speed comes from their demographic group (below) plus individual variation and crowding.</div>
+      <button id="btnFire" class="fire">Ignite center &amp; run</button>
+      <div class="hint">…or click a floor to ignite there. Set occupants/building, then press Setup in the toolbar.</div>
+    </div>
+    <div class="card">
+      <h2>Safety levers</h2>
+      <div class="ctrl"><label>Alarm system</label>
+        <select id="alarmType"><option value="voice">Voice evacuation</option><option value="bell">Bell / horn only</option></select></div>
+      <div class="ctrl"><label>Detection + alarm delay <b id="vDet">30 s</b></label><input id="det" type="range" min="5" max="120" step="5" value="30"></div>
+      <div class="ctrl"><label>Door policy</label>
+        <select id="doors"><option value="closed">Closed (self-closing)</option><option value="open">Propped open</option><option value="auto">Auto-close / fire-rated</option></select></div>
+      <div class="ctrl switchrow"><label>Sprinklers</label><input id="spr" type="checkbox"></div>
+      <div class="ctrl"><label>Locked / blocked exits <b id="vBlk">0</b></label><input id="blk" type="range" min="0" max="30" step="1" value="0"></div>
+      <div class="ctrl"><label>Mobility-impaired occupants <b id="vImp">5%</b></label><input id="imp" type="range" min="0" max="30" step="1" value="5"></div>
+    </div>
+    <div class="card">
+      <h2>Interventions — test if worth building</h2>
+      <div id="levA"></div>
+    </div>
+    <div class="card">
+      <h2>Human factors — may or may not matter</h2>
+      <div class="hint" style="margin:-4px 0 10px">Sweep these to see if something "obvious" turns out to matter. Each has a real pathway into the model.</div>
+      <div id="levB"></div>
+    </div>
+    <div class="card">
+      <h2>Analysis</h2>
+      <div class="ctrl"><label>Replications</label>
+        <select id="mcReps"><option value="25">25 runs (fast)</option><option value="50">50 runs</option><option value="100">100 runs (clearest)</option></select></div>
+      <button id="btnMC" style="width:100%">Run Monte Carlo</button>
+      <button id="btnCSV" style="width:100%;margin-top:8px">Export run data (CSV)</button>
+      <div id="mcOut" class="hint" style="margin-top:11px">Runs the current scenario many times and reports the spread of outcomes. More runs resolve subtle levers.</div>
+      <canvas id="mcHist" style="width:100%;height:96px;display:none;margin-top:11px;background:var(--card2);border:1px solid var(--line);border-radius:9px"></canvas>
+    </div>
+    <div class="card">
+      <h2>Monitors</h2>
+      <div class="metrics">
+        <div class="metric"><div class="v" id="mTime">0</div><div class="k">elapsed · RSET (s)</div></div>
+        <div class="metric"><div class="v good" id="mEvac">0</div><div class="k">evacuated (people)</div></div>
+        <div class="metric"><div class="v" id="mRem">0</div><div class="k">still inside (people)</div></div>
+        <div class="metric"><div class="v bad" id="mCrush">0</div><div class="k">crush deaths (people)</div></div>
+        <div class="metric"><div class="v bad" id="mSmoke">0</div><div class="k">smoke deaths (people)</div></div>
+        <div class="metric"><div class="v" id="mDens">0</div><div class="k">peak crowding (P/m²)</div></div>
+      </div>
+      <div class="bar"><i id="barEvac"></i></div>
+    </div>
+    <div class="card">
+      <h2>Evacuation curve</h2>
+      <canvas id="plot"></canvas>
+      <div class="plotkey"><span><i style="background:var(--good)"></i>evacuated</span><span><i style="background:#8791a3"></i>inside</span></div>
+    </div>
+    <div class="card">
+      <h2>Casualties over time</h2>
+      <canvas id="plotD" style="width:100%;height:96px;display:block;background:var(--card2);border:1px solid var(--line);border-radius:9px"></canvas>
+      <div class="plotkey"><span><i style="background:#ff2d55"></i>crush</span><span><i style="background:#8791a3"></i>smoke</span></div>
+    </div>
+    <div class="card">
+      <h2>Outcome</h2>
+      <canvas id="plotO" style="width:100%;height:24px;display:block;background:var(--card2);border:1px solid var(--line);border-radius:6px"></canvas>
+      <div class="plotkey"><span><i style="background:#35d08a"></i>evacuated</span><span><i style="background:#5b6472"></i>inside</span><span><i style="background:#ff2d55"></i>crush</span><span><i style="background:#3a414c;border:1px solid #556"></i>smoke</span></div>
+    </div>
+  </div>
+</div>
+
+<script src="campus-data.js"></script>
+<script src="hekman-floor.js"></script>
+<script src="engine.js"></script>
+<script src="buildings.js"></script>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+const $ = id => document.getElementById(id);
+const GAP = 16, WALL_H = 2.6, AGENT_CAP = 600, HAZ_CAP = 24000;
+
+// ---- scene skeleton (created once) ----
+const host = $('view');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x141922);
+const camera = new THREE.PerspectiveCamera(55, host.clientWidth/host.clientHeight, 0.1, 5000);
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setSize(host.clientWidth, host.clientHeight);
+renderer.setPixelRatio(Math.min(2, devicePixelRatio));
+host.appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xdce8ff, 0x2a3040, 1.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.0); sun.position.set(200, 300, -100); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.5); fill.position.set(-150, 160, 250); scene.add(fill);
+
+const agentMesh = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.85,0.85,2.2,10), new THREE.MeshBasicMaterial({}), AGENT_CAP);
+agentMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(agentMesh);
+// colour people by demographic group; override with hazard colours when hurt
+const GCOL = { able:new THREE.Color(0x4a9eff), older:new THREE.Color(0x37c0a0), child:new THREE.Color(0x8bd450), impaired:new THREE.Color(0xf0a83b) };
+const DCOL = { 3:new THREE.Color(0xff2d55), 4:new THREE.Color(0x262b36), 5:new THREE.Color(0xb06a2c) };
+const fireMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1.2,7,1.2), new THREE.MeshBasicMaterial({color:0xff7d1a}), HAZ_CAP);
+fireMesh.renderOrder = 3;                       // tall bright columns, drawn on top so fire is always visible
+const smokeMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1.2,6,1.2), new THREE.MeshBasicMaterial({color:0x9aa0a8,transparent:true,opacity:0.5,depthWrite:false}), HAZ_CAP);
+fireMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); smokeMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+scene.add(fireMesh); scene.add(smokeMesh);
+
+let sim, W, H, F, running=false, fireCell=null, wallMesh=null, exitMesh=null, doorMesh=null, slabs=[];
+const floorY = f => f*GAP;
+
+function rebuildStatic() {
+  if (wallMesh) scene.remove(wallMesh);
+  if (exitMesh) scene.remove(exitMesh);
+  if (doorMesh) scene.remove(doorMesh);
+  slabs.forEach(s=>scene.remove(s)); slabs=[];
+  const FLOORCOL=[0x2b3650,0x28453f,0x3b3352,0x4a3a2a,0x2f3f52];
+  for (let f=0; f<F; f++) {
+    const col=FLOORCOL[f%FLOORCOL.length];
+    const slab = new THREE.Mesh(new THREE.PlaneGeometry(W,H),
+      new THREE.MeshLambertMaterial({color:col, transparent:f!==0, opacity:f===0?1:0.22, side:THREE.DoubleSide}));
+    slab.rotation.x=-Math.PI/2; slab.position.set(W/2, floorY(f), H/2); slab.userData.floor=f;
+    const pts=[[-W/2,-H/2],[W/2,-H/2],[W/2,H/2],[-W/2,H/2],[-W/2,-H/2]].map(p=>new THREE.Vector3(p[0],p[1],0));
+    const frame=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color:0x6a7ba0}));
+    slab.add(frame);   // outline so each level reads as its own plate
+    scene.add(slab); slabs.push(slab);
+  }
+  const wcells=[], ex=[], drc=[];
+  for (let f=0; f<F; f++) { const T=sim.type[f];
+    for (let r=0;r<H;r++) for (let c=0;c<W;c++) { const t=T[r*W+c];
+      if (t===2 && f===0) ex.push([c,r]);
+      if (sim.door[f][r*W+c]) drc.push([c,r,f]);      // doorway cells
+      if (t!==0) continue;
+      let touch=false; for (const [dc,dr] of [[-1,0],[1,0],[0,-1],[0,1]]){const cc=c+dc,rr=r+dr;if(cc<0||rr<0||cc>=W||rr>=H)continue;if(T[rr*W+cc]!==0){touch=true;break;}}
+      if (touch) wcells.push([c,r,f]);
+    }
+  }
+  const m=new THREE.Matrix4();
+  wallMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(1,WALL_H,1), new THREE.MeshLambertMaterial({color:0x8a97b3}), Math.max(1,wcells.length));
+  wcells.forEach(([c,r,f],i)=>{m.setPosition(c+.5, floorY(f)+WALL_H/2, r+.5); wallMesh.setMatrixAt(i,m);}); wallMesh.count=wcells.length; scene.add(wallMesh);
+  exitMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(1,0.2,1), new THREE.MeshBasicMaterial({color:0x37d67a}), Math.max(1,ex.length));
+  ex.forEach(([c,r],i)=>{m.setPosition(c+.5,0.12,r+.5); exitMesh.setMatrixAt(i,m);}); exitMesh.count=ex.length; scene.add(exitMesh);
+  // doorways: short amber posts marking each opening between rooms
+  doorMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(1.0,WALL_H+0.6,1.0), new THREE.MeshBasicMaterial({color:0xb388ff}), Math.max(1,drc.length));
+  doorMesh.renderOrder = 2;   // bright full-height frames marking every doorway
+  drc.forEach(([c,r,f],i)=>{m.setPosition(c+.5, floorY(f)+(WALL_H+0.6)/2, r+.5); doorMesh.setMatrixAt(i,m);}); doorMesh.count=drc.length; scene.add(doorMesh);
+  // camera framing for this building
+  const span=Math.max(W,H), stack=F*GAP;
+  camera.position.set(W/2 + span*0.10, stack*0.55 + span*0.5, H/2 + span*1.35);  // low oblique angle shows the stack
+  controls.target.set(W/2, stack*0.4, H/2); controls.update();
+}
+
+const M=new THREE.Matrix4(), ZERO=new THREE.Matrix4().makeScale(0,0,0);
+function updateInstances() {
+  const a=sim.agents;
+  for (let i=0;i<AGENT_CAP;i++){
+    if (i<a.length && a[i].state!==2){ const ag=a[i], gs=ag.gsize||1;
+      M.makeScale(gs,1,gs); M.setPosition(ag.c+.5, floorY(ag.floor)+1.6, ag.r+.5); agentMesh.setMatrixAt(i,M);
+      agentMesh.setColorAt(i, ag.state>=3 ? (DCOL[ag.state]||DCOL[3]) : (GCOL[ag.group]||GCOL.able)); }
+    else agentMesh.setMatrixAt(i, ZERO);
+  }
+  agentMesh.count=AGENT_CAP; agentMesh.instanceMatrix.needsUpdate=true; if (agentMesh.instanceColor) agentMesh.instanceColor.needsUpdate=true;
+  let nf=0, ns=0;
+  for (let f=0; f<F; f++){ const y=floorY(f);
+    for (let i=0;i<W*H;i++){
+      if (sim.fire[f][i] && nf<HAZ_CAP){ M.makeTranslation(i%W+.5, y+3.4, (i/W|0)+.5); fireMesh.setMatrixAt(nf++,M); }
+      else if (sim.smoke[f][i]>0.15 && ns<HAZ_CAP){ M.makeTranslation(i%W+.5, y+3.0, (i/W|0)+.5); smokeMesh.setMatrixAt(ns++,M); }
+    }
+  }
+  fireMesh.count=nf; smokeMesh.count=ns; fireMesh.instanceMatrix.needsUpdate=true; smokeMesh.instanceMatrix.needsUpdate=true;
+}
+function updateMetrics(){ const m=sim.metrics();
+  $('mTime').textContent=m.t.toFixed(0); $('mEvac').textContent=m.evacuated; $('mRem').textContent=m.remaining;
+  $('mCrush').textContent=m.crushDeaths; $('mSmoke').textContent=m.smokeDeaths; $('mDens').textContent=(m.peakDensity*4).toFixed(1);
+  $('barEvac').style.width=(100*m.evacuated/Math.max(1,m.population))+'%';
+  $('ticks').textContent=Math.round(m.tNow/0.25); $('clock').textContent=m.tNow.toFixed(1)+' s';
+}
+let hist=[], histD=[];
+const plot=$('plot'), pctx=plot.getContext('2d');
+const plotD=$('plotD'), dctx=plotD.getContext('2d');
+const plotO=$('plotO'), octx=plotO.getContext('2d');
+const mcHist=$('mcHist'), hctx=mcHist.getContext('2d');
+function setRunning(b){ running=b; $('btnRun').textContent=b?'Stop':'Go'; $('runDot').classList.toggle('on',b); $('runState').textContent=b?'running':((sim&&sim.done)?'done':'idle'); }
+function sizeCanvas(c){ c.width=c.clientWidth||280; c.height=c.clientHeight||96; }
+function resetPlot(){ hist=[]; histD=[];
+  plot.width=plot.clientWidth||280; plot.height=plot.clientHeight||120;
+  sizeCanvas(plotD); sizeCanvas(plotO); redraw(); }
+function pushHist(){ const m=sim.metrics();
+  hist.push([m.tNow, m.evacuated, m.remaining]);
+  histD.push([m.tNow, m.crushDeaths, m.smokeDeaths]); }
+function redraw(){ drawPlot(); drawPlotD(); drawOutcome(); }
+function grid(ctx,w,h,pad,rows){ ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
+  for(let g=0;g<=rows;g++){ const y=pad+(h-2*pad)*g/rows; ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke(); } }
+function drawPlot(){ const w=plot.width,h=plot.height,pad=5; pctx.clearRect(0,0,w,h); grid(pctx,w,h,pad,4);
+  if(hist.length<2) return; const pop=Math.max(1,sim.agents.length), maxT=Math.max(30,hist[hist.length-1][0]);
+  const X=t=>pad+(w-2*pad)*(t/maxT), Y=v=>h-pad-(h-2*pad)*(v/pop);
+  const line=(idx,color)=>{ pctx.strokeStyle=color; pctx.lineWidth=2; pctx.beginPath(); hist.forEach((p,i)=>{const x=X(p[0]),y=Y(p[idx]); i?pctx.lineTo(x,y):pctx.moveTo(x,y);}); pctx.stroke(); };
+  line(2,'#8791a3'); line(1,'#35d08a'); }
+function drawPlotD(){ const w=plotD.width,h=plotD.height,pad=5; dctx.clearRect(0,0,w,h); grid(dctx,w,h,pad,3);
+  if(histD.length<2) return; const maxT=Math.max(30,histD[histD.length-1][0]);
+  let maxD=5; for(const p of histD) maxD=Math.max(maxD,p[1],p[2]);
+  const X=t=>pad+(w-2*pad)*(t/maxT), Y=v=>h-pad-(h-2*pad)*(v/maxD);
+  const line=(idx,color)=>{ dctx.strokeStyle=color; dctx.lineWidth=2; dctx.beginPath(); histD.forEach((p,i)=>{const x=X(p[0]),y=Y(p[idx]); i?dctx.lineTo(x,y):dctx.moveTo(x,y);}); dctx.stroke(); };
+  line(2,'#8791a3'); line(1,'#ff2d55'); }
+function drawOutcome(){ const w=plotO.width,h=plotO.height; octx.clearRect(0,0,w,h);
+  if(!sim) return; const m=sim.metrics(); const pop=Math.max(1,m.population);
+  const segs=[[m.evacuated,'#35d08a'],[m.remaining,'#5b6472'],[m.crushDeaths,'#ff2d55'],[m.smokeDeaths,'#3a414c']];
+  let x=0; for(const [v,c] of segs){ const sw=w*(v/pop); octx.fillStyle=c; octx.fillRect(x,0,Math.max(0,sw+.5),h); x+=sw; } }
+function drawHist(vals){ mcHist.style.display='block'; sizeCanvas(mcHist);
+  const w=mcHist.width,h=mcHist.height,pad=6; hctx.clearRect(0,0,w,h);
+  if(!vals||!vals.length) return;
+  const mn=Math.min(...vals), mx=Math.max(...vals), nb=8, bwv=(mx-mn)/nb||1;
+  const bins=new Array(nb).fill(0); vals.forEach(v=>{ let b=Math.floor((v-mn)/bwv); if(b<0)b=0; if(b>=nb)b=nb-1; bins[b]++; });
+  const maxC=Math.max(...bins,1), bw=(w-2*pad)/nb;
+  hctx.fillStyle='#c33b52';
+  bins.forEach((c,i)=>{ const bh=(h-2*pad-13)*(c/maxC); hctx.fillRect(pad+i*bw+1, h-pad-13-bh, bw-2, bh); });
+  hctx.fillStyle='#98a1b2'; hctx.font='10px ui-monospace,monospace'; hctx.textAlign='center';
+  hctx.fillText(Math.round(mn)+'s', pad+bw, h-3); hctx.fillText('RSET', w/2, h-3); hctx.fillText(Math.round(mx)+'s', w-pad-bw, h-3); }
+// [id (=engine param), label, min, max, default]  — bool levers use ['id','label','bool']
+const LEVERS_A = [
+  ['wardens','Trained floor wardens',0,30,0], ['familiarity','Drill familiarity',0,100,0],
+  ['signage','Signage & emergency lighting',0,100,0], ['smartGuidance','Smart dynamic guidance',0,100,0],
+  ['personalAlert','Personal phone / wearable alerts',0,100,0], ['smokeVents','Smoke vents / exhaust',0,100,0],
+  ['stairPressurized','Stairwell pressurization','bool'], ['evacElevators','Occupant-evacuation elevators','bool'],
+  ['phased','Phased (staggered) evacuation','bool'] ];
+const LEVERS_B = [
+  ['belongings','Stop to grab belongings',0,100,0], ['phone','Phone distraction',0,100,0],
+  ['cohesion','Move in groups (wait for others)',0,100,0], ['attire','Bulky attire / footwear',0,100,0],
+  ['noise','Background noise (masks alarm)',0,100,0], ['urgency','Alarm urgency (calm→urgent)',0,100,0],
+  ['herding','Herding (follow the crowd)',0,100,0], ['ceiling','Low ceilings',0,100,0],
+  ['slip','Slippery floors',0,100,0], ['daylight','Daylight / windows',0,100,0],
+  ['exitConspicuity','Exit-sign conspicuity',0,100,0], ['handrails','Handrails on stairs','bool'],
+  ['night','Night / sleeping occupants','bool'] ];
+const LEVERS = [...LEVERS_A, ...LEVERS_B];
+function buildLevers(host, defs){ for(const d of defs){ const row=document.createElement('div');
+  if(d[2]==='bool'){ row.className='ctrl switchrow'; row.innerHTML='<label>'+d[1]+'</label><input id="'+d[0]+'" type="checkbox">'; host.appendChild(row); }
+  else { row.className='ctrl'; row.innerHTML='<label>'+d[1]+' <b id="v_'+d[0]+'">'+d[4]+'%</b></label><input id="'+d[0]+'" type="range" min="'+d[2]+'" max="'+d[3]+'" step="5" value="'+d[4]+'">';
+    host.appendChild(row); row.querySelector('input').addEventListener('input',e=>document.getElementById('v_'+d[0]).textContent=e.target.value+'%'); } } }
+buildLevers($('levA'), LEVERS_A); buildLevers($('levB'), LEVERS_B);
+function params(){ const imp=(+$('imp').value)/100; const o={
+  population:+$('pop').value, medianPreMoveS:+$('pre').value, cooperation:+$('coop').value/100, fireCell,
+  sprinklers:$('spr').checked, doorPolicy:$('doors').value, detectionTime:+$('det').value, alarmType:$('alarmType').value,
+  blockedExits:+$('blk').value,
+  demographics:{ able:Math.max(0,0.87-imp), older:0.10, child:0.03, impaired:imp } };
+  for(const d of LEVERS){ o[d[0]] = (d[2]==='bool') ? $(d[0]).checked : (+$(d[0]).value)/100; }
+  return o; }
+
+function loadBuilding(id){
+  const info = Buildings.loadFloors(id);
+  sim = new EvacSim(info.floors); W=sim.W; H=sim.H; F=sim.F;
+  fireCell=null;
+  sim.reset(params()); rebuildStatic(); updateInstances(); updateMetrics(); resetPlot(); setRunning(false);
+}
+function setup(){ fireCell=null; sim.reset(params()); updateInstances(); updateMetrics(); resetPlot(); setRunning(false); }
+
+// fixed-timestep clock: 1 tick = DT_MS of SIM time; Speed = real-time multiplier
+const DT_MS = 250;   // engine DT = 0.25 s
+let lastT = performance.now(), acc = 0;
+function animate(){ requestAnimationFrame(animate);
+  const now = performance.now(); let dtReal = Math.min(250, now - lastT); lastT = now;
+  if (running){
+    acc += dtReal * (+$('speed').value);          // ×1 = real time
+    let steps = 0;
+    while (acc >= DT_MS && steps < 500){ if (sim.done) break; sim.step(); acc -= DT_MS; steps++; }
+    updateInstances(); updateMetrics(); pushHist(); redraw();
+    if (sim.done) setRunning(false);
+  } else acc = 0;
+  controls.update(); renderer.render(scene,camera);
+}
+
+// ---- UI ----
+const sel=$('bld');
+for (const b of Buildings.getBuildings()){ const o=document.createElement('option'); o.value=b.id; o.textContent=b.name; sel.appendChild(o); }
+sel.addEventListener('change', e=>loadBuilding(+e.target.value));
+for (const [id,out,fn] of [['pop','vPop',v=>v+' people'],['pre','vPre',v=>v+' s'],['coop','vCoop',v=>v+'%']])
+  $(id).addEventListener('input', e=>$(out).textContent=fn(e.target.value));
+$('speed').addEventListener('input', e=>$('vSpeed').textContent=e.target.value+'×');
+$('det').addEventListener('input', e=>$('vDet').textContent=e.target.value+' s');
+$('blk').addEventListener('input', e=>$('vBlk').textContent=e.target.value);
+$('imp').addEventListener('input', e=>$('vImp').textContent=e.target.value+'%');
+$('spr').addEventListener('change', ()=>{ if(sim) sim.params.sprinklers=$('spr').checked; });
+$('btnMC').onclick = ()=>{
+  const info = Buildings.loadFloors(+$('bld').value);
+  const reps = +$('mcReps').value;
+  $('mcOut').textContent = 'Running '+reps+' simulations…';
+  setTimeout(()=>{ const R = monteCarlo(info.floors, params(), reps);
+    $('mcOut').innerHTML = 'RSET median <b>'+R.rsetStats.p50.toFixed(0)+' s</b> (range '+R.rsetStats.min.toFixed(0)+'–'+R.rsetStats.max.toFixed(0)+' s) · deaths median <b>'+R.deathStats.p50+'</b> (max '+R.deathStats.max+') · everyone escaped in <b>'+R.allEscapePct+'%</b> of runs';
+    drawHist(R.rset);
+  }, 30);
+};
+// ---- CSV export: scenario params + final metrics + full evacuation curve ----
+function buildCSV(){
+  const m = sim.metrics(), p = params();
+  const bname = (($('bld').selectedOptions[0]||{}).textContent || 'building').replace(/,/g,' ');
+  const L = [];
+  L.push('# Calvin Egress — evacuation run export');
+  L.push('# building,'+bname);
+  for (const [k,v] of Object.entries(p)){
+    if (k==='fireCell') continue;
+    if (v && typeof v==='object'){ for (const [k2,v2] of Object.entries(v)) L.push('# '+k+'.'+k2+','+v2); }
+    else L.push('# '+k+','+v);
+  }
+  L.push('# RSET_s,'+m.t.toFixed(1));
+  L.push('# sim_time_s,'+m.tNow.toFixed(1));
+  L.push('# evacuated,'+m.evacuated);
+  L.push('# still_inside,'+m.remaining);
+  L.push('# crush_deaths,'+m.crushDeaths);
+  L.push('# smoke_deaths,'+m.smokeDeaths);
+  L.push('# peak_density_pm2,'+(m.peakDensity*4).toFixed(2));
+  L.push('time_s,evacuated,inside');
+  for (const h of hist) L.push(h[0].toFixed(2)+','+h[1]+','+h[2]);
+  return L.join('\n');
+}
+function downloadCSV(name, text){
+  const blob = new Blob([text], {type:'text/csv'}), url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+$('btnCSV').onclick = ()=>{
+  const bn = (($('bld').selectedOptions[0]||{}).textContent||'run').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  downloadCSV('calvin-egress-'+bn+'.csv', buildCSV());
+};
+$('btnSetup').onclick=setup; $('btnReset').onclick=setup;
+$('btnRun').onclick=()=>{ if(sim.done)return; setRunning(!running); };
+$('btnStep').onclick=()=>{ if(!sim.done){ sim.step(); updateInstances(); updateMetrics(); pushHist(); redraw(); } };
+$('btnFire').onclick=()=>{ sim.ignite(null); updateInstances(); if(!running&&!sim.done) setRunning(true); };
+const ray=new THREE.Raycaster(), mouse=new THREE.Vector2();
+renderer.domElement.addEventListener('click', e=>{
+  const rect=renderer.domElement.getBoundingClientRect();
+  mouse.x=((e.clientX-rect.left)/rect.width)*2-1; mouse.y=-((e.clientY-rect.top)/rect.height)*2+1;
+  ray.setFromCamera(mouse,camera); const hit=ray.intersectObjects(slabs)[0]; if(!hit)return;
+  const f=hit.object.userData.floor, c=Math.floor(hit.point.x), r=Math.floor(hit.point.z);
+  if (c<0||r<0||c>=W||r>=H) return;
+  if (sim.placeFire(f,c,r)){ fireCell=[c,r,f]; updateInstances(); }
+});
+window.addEventListener('resize', ()=>{ camera.aspect=host.clientWidth/host.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(host.clientWidth,host.clientHeight); });
+
+// start on Hekman
+const hek = Buildings.getBuildings().find(b=>b.real);
+sel.value = hek.id; loadBuilding(hek.id);
+window.__sim = () => sim;   // debug hook
+animate();
+</script>
+</body>
+</html>

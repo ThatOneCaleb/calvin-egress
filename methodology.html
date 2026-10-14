@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology — Calvin Egress</title>
+<meta name="description" content="How the Calvin Egress evacuation simulator works: geometry, floor-field routing, demographic movement, OCEAN behavior, t² fire, smoke/FED tenability, and the RSET timeline.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23c33b52'/%3E%3Ctext x='50' y='68' font-family='Archivo,sans-serif' font-size='52' font-weight='900' fill='white' text-anchor='middle'%3ECE%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="nav"><div class="wrap">
+  <a class="brand" href="index.html"><span class="logo">CE</span><span class="wm">Calvin Egress<span>Evacuation Simulator</span></span></a>
+  <input type="checkbox" id="navtoggle" class="navtoggle" hidden>
+  <label class="hamb" for="navtoggle" aria-label="Toggle menu"><span></span><span></span><span></span></label>
+  <nav class="navlinks">
+    <a href="index.html">Overview</a>
+    <a href="methodology.html" class="active">Methodology</a>
+    <a href="validation.html">Validation</a>
+    <a href="about.html">About</a>
+    <a class="cta" href="simulator.html">Launch Simulator →</a>
+  </nav>
+</div></header>
+
+<section class="hero" style="padding-bottom:40px"><div class="wrap">
+  <p class="eyebrow reveal">Methodology</p>
+  <h1 class="h-lg reveal d1" style="max-width:20ch">The model, in full — and exactly how far it goes.</h1>
+  <p class="lead reveal d2">Calvin Egress is a performance-based egress + fire/smoke tenability model. It computes <strong>ASET vs RSET</strong> — the available versus required safe egress time — the central comparison of fire-safety engineering.</p>
+</div></section>
+
+<section class="band tight"><div class="wrap">
+<div class="docgrid">
+  <aside class="toc reveal">
+    <p class="eyebrow" style="margin-bottom:12px">On this page</p>
+    <a href="#geometry">Geometry</a>
+    <a href="#routing">Routing</a>
+    <a href="#movement">Movement &amp; speeds</a>
+    <a href="#behavior">Behavior</a>
+    <a href="#rset">RSET timeline</a>
+    <a href="#fire">Fire</a>
+    <a href="#smoke">Smoke &amp; tenability</a>
+    <a href="#levers">Planning levers</a>
+    <a href="#calibration">Calibration values</a>
+  </aside>
+
+  <article class="prose reveal d1">
+    <h2 id="geometry">Geometry</h2>
+    <p>The world is a 1-metre grid, one cell per square metre. <strong>Hekman Library</strong> is a real digitized interior across four floors; every other Calvin building is a procedural interior generated to fit its true <strong>OpenStreetMap footprint</strong> polygon. <strong>Rooms and doorways are inferred from the wall grid</strong> — rooms as connected components of navigable space, doors as the one-cell pinch-points between them — so fire and people must channel through openings rather than drift through walls.</p>
+
+    <h2 id="routing">Routing</h2>
+    <p>Occupants navigate a <strong>static floor field</strong>: a multi-source breadth-first search outward from every stairwell and exit assigns each cell its geodesic distance to safety. People descend that gradient toward the nearest egress. Stairwells connect floors as <strong>capacity-limited bottlenecks</strong>, so upper-floor crowds queue and merge exactly where real buildings jam.</p>
+
+    <h2 id="movement">Movement &amp; speeds</h2>
+    <p>The clock is real: one simulation tick is <code>0.25 s</code>. Free-flow walking speed is set by <strong>demographic group</strong>, then reduced by local crowd density following a Weidmann-style fundamental diagram — the denser the crowd, the slower everyone moves.</p>
+    <table class="tbl">
+      <thead><tr><th>Group</th><th>Free-flow walking speed</th></tr></thead>
+      <tbody>
+        <tr><td>Able adult</td><td class="num">≈ 1.34 m/s</td></tr>
+        <tr><td>Older adult</td><td class="num">≈ 1.04 m/s</td></tr>
+        <tr><td>Child</td><td class="num">≈ 0.82 m/s</td></tr>
+        <tr><td>Mobility-impaired</td><td class="num">≈ 0.57 m/s</td></tr>
+      </tbody>
+    </table>
+    <p>Speeds follow Weidmann/Fruin pedestrian data. Each person also carries individual variation and a distinct body size, so the crowd is genuinely heterogeneous — visible on screen as differently colored, differently sized occupants.</p>
+
+    <h2 id="behavior">Behavior</h2>
+    <p>Each occupant has an <strong>OCEAN personality</strong> that drives how they act under stress: when they start moving (pre-movement), how hard they push in a crowd (which can cause crush falls), whether they stop to help, and how familiar they are with the building's exits. Lower cooperation produces more competitive pushing and more crush casualties at bottlenecks.</p>
+
+    <h2 id="rset">The RSET timeline</h2>
+    <p>Required Safe Egress Time is modeled explicitly as a sequence, so every lever moves the correct term:</p>
+    <ul>
+      <li><strong>Detection → alarm.</strong> Detector coverage and alarm type set when the evacuation clock starts.</li>
+      <li><strong>Pre-movement.</strong> A lognormal delay about an adjustable median (SFPE) — <strong>voice evacuation</strong> shortens it versus a bell or horn.</li>
+      <li><strong>Travel.</strong> Density-dependent walking, queueing, and stair descent to the exits.</li>
+    </ul>
+
+    <h2 id="fire">Fire</h2>
+    <p>Fire follows a <strong>t²-style growth ramp</strong> and spreads cell-to-cell — fast across open space, <strong>throttled at doorways</strong> according to door policy (propped open, self-closing, or auto-close / fire-rated). <strong>Sprinklers</strong>, when present, cap the growth, which materially extends the available time. Fire climbs between floors through stairwells like a chimney.</p>
+
+    <h2 id="smoke">Smoke &amp; tenability</h2>
+    <p>Smoke is modeled as <strong>its own front</strong> — it outruns the flame, fills rooms, and travels corridors and stairwells. It does two things to people: it <strong>reduces walking speed and causes wrong turns</strong> as visibility drops (Jin), and it accrues a <strong>fractional effective dose (FED)</strong>. Only smoke above a concentration threshold adds to the dose; when the cumulative dose crosses the incapacitation limit, that occupant is lost. The time until conditions become untenable is <strong>ASET</strong> — the number RSET must beat.</p>
+
+    <h2 id="levers">Planning levers</h2>
+    <p>The things a university actually controls are all adjustable: alarm type, detection delay, sprinklers, door policy, locked or blocked exits, occupant load, demographic mix, and cooperation. A second tier of <strong>intervention</strong> and <strong>human-factor</strong> sweeps (floor wardens, drills, signage, phone distraction, bulky attire, background noise, herding, and more) lets you test whether an "obvious" factor actually changes the outcome — each has a real pathway into the model.</p>
+
+    <h2 id="calibration">Calibration values</h2>
+    <ul>
+      <li>1 cell = 1 m; 1 tick = 0.25 s; density → speed approximates Weidmann.</li>
+      <li>Pre-movement lognormal about an adjustable median; voice-evacuation factor ≈ 0.62 (SFPE).</li>
+      <li>FED: only smoke above a threshold accrues dose; incapacitation at a cumulative dose.</li>
+      <li>Door flame factor — open 0.6 / self-closing 0.10 / auto-close or rated 0 (compartmentation); smoke similarly.</li>
+    </ul>
+    <div class="callout">
+      <h4>Run modes</h4>
+      <p>A <strong>single live run</strong> plays one scenario in 3D. <strong>Monte-Carlo</strong> runs the same scenario many times and reports the distribution of RSET, deaths, and the percentage of runs in which everyone escapes — the defensible way to read a stochastic model.</p>
+    </div>
+    <div class="cta-row" style="margin-top:34px">
+      <a class="btn primary" href="simulator.html">Try it in the simulator <span class="arrow">→</span></a>
+      <a class="btn" href="validation.html">See validation &amp; limits</a>
+    </div>
+  </article>
+</div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <div class="about">
+      <a class="brand" href="index.html"><span class="logo">CE</span><span class="wm">Calvin Egress<span>Evacuation Simulator</span></span></a>
+      <p>A performance-based evacuation + fire/smoke tenability simulator for Calvin University safety planning. Comparative planning tool — ASET vs RSET — not a certified life-safety calculation.</p>
+    </div>
+    <div><h5>Explore</h5><nav>
+      <a href="simulator.html">Launch simulator</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="validation.html">Validation &amp; limits</a>
+    </nav></div>
+    <div><h5>Project</h5><nav>
+      <a href="about.html">About</a>
+      <a href="credits.html">Credits &amp; references</a>
+      <a href="validation.html#roadmap">Roadmap</a>
+    </nav></div>
+  </div>
+  <div class="foot-base">
+    <span>© 2026 Calvin Egress · Built by Caleb Steele for Calvin University safety planning.</span>
+    <span class="mono">v1.0 · browser engine · ASET vs RSET</span>
+  </div>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>
